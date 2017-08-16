@@ -1,0 +1,38 @@
+###Relacionado al despliegue
+
+server:
+  port: ${vcap.application.port:8077}
+
+###Relacionado a Spring - Hibernate
+
+spring:
+
+  aop:
+    proxy-target-class: false
+
+  profiles: default
+
+  production:
+    active: false
+    
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pyme_erp_seguridad
+    username: root
+    password: 1234
+     
+                      
+
+  jpa:    
+    properties:
+      hibernate:                             
+        current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
+        naming_strategy:  org.hibernate.cfg.DefaultNamingStrategy
+        #naming-strategy:  org.hibernate.cfg.ImprovedNamingStrategy        
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: true
+        format_sql: true          
+        packagesToScan: pe.jaav.sistemas.seguridadgeneral.model
+        
+        
+        
