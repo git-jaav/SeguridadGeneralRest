@@ -1,16 +1,14 @@
 ###Relacionado al despliegue
 
 server:
-  port: ${vcap.application.port:8077}
+  port: ${vcap.application.port:8071}
 
 ###Relacionado a Spring - Hibernate
 
 spring:
-
+  profiles: default
   aop:
     proxy-target-class: false
-
-  profiles: default
 
   production:
     active: false
@@ -20,8 +18,6 @@ spring:
     url: jdbc:mysql://localhost:3306/pyme_erp_seguridad
     username: root
     password: 1234
-     
-                      
 
   jpa:    
     properties:

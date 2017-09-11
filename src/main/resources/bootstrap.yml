@@ -2,10 +2,21 @@
 spring:
   profiles:
     active: local
-  application:
-    name: seguridadGeneral
   cloud:
     config:
       uri: http://localhost:8001
-server:
-  port: 8002
+
+
+eureka:
+  #Esta config puede estar controlada por CONFIG SERVER
+  client:  
+      serviceUrl:
+        defaultZone:  http://localhost:8002/eureka/  
+  instance:
+    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+---
+spring:
+  profiles: local
+  application:
+    name: seguridadGeneral
