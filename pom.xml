@@ -19,6 +19,7 @@
 	</parent>
 
 	<properties>
+		<start-class>pe.jaav.sistemas.SeguridadGeneralRest.SeguridadGeneralRestApplication</start-class>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<hibernate.version>4.3.9.Final</hibernate.version>
@@ -67,6 +68,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>net.sf.dozer</groupId>
+		    <artifactId>dozer</artifactId>
+		    <version>5.5.1</version>
 		</dependency>
 		
 		<dependency>

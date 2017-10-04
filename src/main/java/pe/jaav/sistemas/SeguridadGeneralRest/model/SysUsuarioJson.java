@@ -7,7 +7,17 @@ import pe.jaav.sistemas.SeguridadGeneralRest.utiles.JsonViewCustom;
 import pe.jaav.sistemas.seguridadgeneral.model.domain.SysUsuario;
 
 @JsonIgnoreProperties(value =  
-	{ "urlJson","numeroFilas","inicio", "visibled","numeroColumnas" ,"accionDB","valorStringSup","valorIntSup"}
+	{ "urlJson",
+	//"numeroFilas",
+	//"inicio", 	
+	//"contadorTotal" ,	
+	//"accionDB",
+	"numeroColumnas" ,
+	"valorBoolSup",
+	"valorStringSup",
+	"valorIntSup"
+	
+	}
 )
 @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
 public  class SysUsuarioJson extends SysUsuario {
@@ -19,7 +29,7 @@ public  class SysUsuarioJson extends SysUsuario {
 	
 	private String urlJson;
 
-	public String getUrlJson() {
+	public String getUrlJson() {		
 		return urlJson;
 	}
 
