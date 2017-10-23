@@ -27,7 +27,7 @@ import pe.jaav.sistemas.seguridadgeneral.model.domain.SysUsuario;
  * Rest Controller con CRUD y listados básicos ... basados en una entidad: SysUsuario
  */
 @RestController
-@RequestMapping("/seguridad")
+@RequestMapping("/api/seguridad")
 public class SeguridadController {
 
 	 @Autowired
@@ -97,6 +97,23 @@ public class SeguridadController {
 	        }
 	    }
 	    
+	    /** GET LOGIN POST, 
+	     * @param usuario
+	     * @param ucBuilder
+	     * @return
+	     */
+	    @RequestMapping(value = "/login", method = RequestMethod.POST)    		
+	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
+	    public ResponseEntity<SysUsuarioJson> getLogin(@RequestBody SysUsuarioJson usuario, UriComponentsBuilder ucBuilder) {	       	    
+	    	SysUsuario user = userService.obtenerLogin(usuario.getUsuaUsuario(),usuario.getUsuaClave());	        	        	       	        	        
+	        if (user == null) {	            
+	            return new ResponseEntity<SysUsuarioJson>(HttpStatus.NOT_FOUND);
+	        }else{	        	
+	        	return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.OK);	
+	        }
+	        	     
+	    }
+	    
 	    /** Listado POST, con filtros variados, SIN PAGINAR
 	     * @param usuario
 	     * @param ucBuilder
@@ -104,9 +121,9 @@ public class SeguridadController {
 	     */
 	    @RequestMapping(value = "/users/", method = RequestMethod.POST)    		
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
-	    public ResponseEntity<List<SysUsuarioJson>> listUsers(@RequestBody SysUsuario usuario, UriComponentsBuilder ucBuilder) {
+	    public ResponseEntity<List<SysUsuarioJson>> listUsers(@RequestBody SysUsuarioJson usuario, UriComponentsBuilder ucBuilder) {
 	        //System.out.println("Fetching User with id " + usuario);
-	    	List<SysUsuario> users = userService.listar(usuario,false);	        	        	       	        	        
+	    	List<SysUsuario> users = userService.listar(jsonAssembInverso.getJsonObject(usuario),false);	        	        	       	        	        
 	        if(users.isEmpty()){
 	            return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.NO_CONTENT);	            
 	        }else{
@@ -124,9 +141,9 @@ public class SeguridadController {
 	     */
 	    @RequestMapping(value = "/users/pag/", method = RequestMethod.POST)    		
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
-	    public ResponseEntity<List<SysUsuarioJson>> listUsersPaginado(@RequestBody SysUsuario usuario, UriComponentsBuilder ucBuilder) {
+	    public ResponseEntity<List<SysUsuarioJson>> listUsersPaginado(@RequestBody SysUsuarioJson usuario, UriComponentsBuilder ucBuilder) {
 	        //System.out.println("Fetching User with id " + usuario);
-	    	List<SysUsuario> users = userService.listar(usuario,true);	        	        	       	        	        
+	    	List<SysUsuario> users = userService.listar(jsonAssembInverso.getJsonObject(usuario),true);	        	        	       	        	        
 	        if(users.isEmpty()){
 	            return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.NO_CONTENT);	            
 	        }else{
@@ -152,15 +169,15 @@ public class SeguridadController {
 	     */
 	    @RequestMapping(value = "/user/i/", method = RequestMethod.POST)
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
-	    public ResponseEntity<SysUsuarioJson> guardar(@RequestBody SysUsuario user,    UriComponentsBuilder ucBuilder) {	       
+	    public ResponseEntity<SysUsuarioJson> guardar(@RequestBody SysUsuarioJson user,    UriComponentsBuilder ucBuilder) {	       
 	         try{	 	 	        	 
-	        	 int result = userService.guardar(user);
+	        	 int result = userService.guardar(jsonAssembInverso.getJsonObject(user));
 	        	 if(result > 0){
 	        		 user.setUsuaId(result);
 	        	 }	
-			     return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.CREATED);
+			     return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.CREATED);
 		     }catch(Exception e){
-		        return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.INTERNAL_SERVER_ERROR);
+		        return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		     }		         	         
 	    }
 	    
@@ -172,7 +189,7 @@ public class SeguridadController {
 	    @RequestMapping(value = "/user/u/", method = RequestMethod.POST)
 	    //@RequestMapping(value = "/user/u/", method = RequestMethod.PUT)
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
-	    public ResponseEntity<SysUsuarioJson> actualizar(@RequestBody SysUsuario user,    UriComponentsBuilder ucBuilder) {	        
+	    public ResponseEntity<SysUsuarioJson> actualizar(@RequestBody SysUsuarioJson user,    UriComponentsBuilder ucBuilder) {	        
 	         try{	 
 	        	 int result = 0;
 	        	 SysUsuario userUpdate =  userService.obtenerPorID(user.getUsuaId());
@@ -185,12 +202,12 @@ public class SeguridadController {
 		        	 }		        		 
 	        	 }
 	        	 if(result > 0){
-	        		 return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.CREATED);	 
+	        		 return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.CREATED);	 
 	        	 }else{
-	        		 return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.INTERNAL_SERVER_ERROR);
+	        		 return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 	        	 }			     
 		     }catch(Exception e){
-		        return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.INTERNAL_SERVER_ERROR);
+		        return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		     }		         	         
 	    }
 	    
@@ -201,7 +218,7 @@ public class SeguridadController {
 	     */
 	    @RequestMapping(value = "/user/d/", method = RequestMethod.DELETE)
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
-	    public ResponseEntity<SysUsuarioJson> eliminar(@RequestBody SysUsuario user,    UriComponentsBuilder ucBuilder) {	        
+	    public ResponseEntity<SysUsuarioJson> eliminar(@RequestBody SysUsuarioJson user,    UriComponentsBuilder ucBuilder) {	        
 	         try{	 
 	        	 int result = 0;
 	        	 SysUsuario userUpdate =  userService.obtenerPorID(user.getUsuaId());
@@ -212,13 +229,13 @@ public class SeguridadController {
 		        	 }		        		 
 	        	 }
 	        	 if(result > 0){
-	        		 return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.CREATED);	 
+	        		 return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.CREATED);	 
 	        	 }else{
-	        		 return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.INTERNAL_SERVER_ERROR);
+	        		 return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 	        	 }			     
 		     }catch(Exception e){
 		    	 //return new ResponseEntity<SysUsuarioJson>(HttpStatus.NO_CONTENT);
-		        return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.INTERNAL_SERVER_ERROR);
+		        return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		     }		         	         
 	    }	 	  		 
 	

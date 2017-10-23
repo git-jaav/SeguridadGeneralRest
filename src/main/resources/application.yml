@@ -28,8 +28,9 @@ spring:
         show_sql: true
         format_sql: true          
         packagesToScan: pe.jaav.sistemas.seguridadgeneral.model
-        
-        
+       
+       
+            
 #eureka:
 
 #  client:  
