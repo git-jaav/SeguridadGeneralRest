@@ -1,19 +1,19 @@
----
-spring:
-  profiles:
-    active: dev
-  cloud:
-    config:
-      uri: http://localhost:8001
-  
----
-spring:
-  profiles: dev
-  application:
-    name: seguridadGeneral
-    
----
-spring:
-  profiles: local
-  application:
-    name: seguridadLocal    
+#---
+#spring:
+#  profiles:
+#    active: dev
+#  cloud:
+#    config:
+#      uri: http://localhost:8001
+#  
+#---
+#spring:
+#  profiles: dev
+#  application:
+#    name: seguridadGeneral
+#    
+#---
+#spring:
+#  profiles: local
+#  application:
+#    name: seguridadLocal    
