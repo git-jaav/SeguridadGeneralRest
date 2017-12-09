@@ -20,8 +20,9 @@ spring:
       hibernate:                             
         current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
         naming_strategy:  org.hibernate.cfg.DefaultNamingStrategy
-        #naming-strategy:  org.hibernate.cfg.ImprovedNamingStrategy        
-        dialect: org.hibernate.dialect.MySQLDialect
+        #naming-strategy:  org.hibernate.cfg.ImprovedNamingStrategy
+        dialect: org.hibernate.dialect.MySQLDialect        
+        #dialect: org.hibernate.dialect.MySQL5InnoDBDialect 
         show_sql: true
         format_sql: true          
         packagesToScan: pe.jaav.sistemas.seguridadgeneral.model

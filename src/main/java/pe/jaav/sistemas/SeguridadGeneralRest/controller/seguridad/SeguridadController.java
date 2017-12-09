@@ -195,8 +195,10 @@ public class SeguridadController {
 	        	 SysUsuario userUpdate =  userService.obtenerPorID(user.getUsuaId());
 	        	 if(userUpdate!=null){
 	        		 //Actualizar Objeto obtenido con los valores del Objeto parametro recibido...
-	        		 userUpdate = jsonAssembInverso.getJsonObjectDestino(jsonAssemb.getJsonObject(user), userUpdate);
-		        	 result = userService.actualizar(userUpdate);
+	        		 userUpdate = jsonAssembInverso.getJsonObjectDestino(jsonAssemb.getJsonObject(user), userUpdate);	        		
+	        		 result =  userService.actualizar(userUpdate,
+	        				 userService.detectarCambioClaveUsuario(userUpdate.getUsuaId(), userUpdate.getUsuaClave()));
+	        		 		        	 
 		        	 if(result > 0){
 		        		 user.setUsuaId(result);
 		        	 }		        		 
