@@ -54,3 +54,8 @@ server:
 #  instance:
 #    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
 #          
+
+
+###RUN PROFILES
+#java -jar -Dspring.profiles.active=local SeguridadGeneralRest-0.0.1-SNAPSHOT.jar
+#java -jar -Dspring.profiles.active=dev SeguridadGeneralRest-0.0.1-SNAPSHOT.jar
