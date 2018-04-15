@@ -11,7 +11,7 @@ spring:
     
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/pyme_erp_seguridad
+    url: jdbc:mysql://192.168.1.41:3306/pyme_erp_seguridad
     username: root
     password: 1234
 
