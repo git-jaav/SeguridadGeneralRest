@@ -14,4 +14,4 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 # docker run -d -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=dev" --name rest-api dockerImage:latest
 
 #BUILD
-# docker build --file=Dockerfile
+# docker build -t "seguridad-api:dockerfile" .
