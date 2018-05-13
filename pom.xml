@@ -26,8 +26,10 @@
 		<spring.version>4.3.3.RELEASE</spring.version>	<!-- Compatibility with SpringCloud Camden.SR2 -->		
 		<java.version>1.8</java.version>
 		<swagger.version>2.6.1</swagger.version>
-		<dozer.version>5.5.1</dozer.version>	
-	</properties>
+		<dozer.version>5.5.1</dozer.version>
+		<docker.plugin.version>0.4.13</docker.plugin.version>
+		<docker.image.prefix>seguridadGen</docker.image.prefix>
+	</properties>	   
 
 	<dependencyManagement>
 	    <dependencies>	        	
@@ -106,6 +108,25 @@
 		            </excludes>		            			                  
     			</configuration>				
 			</plugin>
+			
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker.plugin.version}</version>
+
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+            			
 		</plugins>
 	</build>
 

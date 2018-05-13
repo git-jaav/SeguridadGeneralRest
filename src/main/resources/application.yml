@@ -59,3 +59,7 @@ server:
 ###RUN PROFILES
 #java -jar -Dspring.profiles.active=local SeguridadGeneralRest-0.0.1-SNAPSHOT.jar
 #java -jar -Dspring.profiles.active=dev SeguridadGeneralRest-0.0.1-SNAPSHOT.jar
+
+
+###RUN MVN DOCKER
+#mvn package docker:build
