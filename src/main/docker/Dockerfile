@@ -1,5 +1,5 @@
 #Docker file para basico spring boot project
-FROM anapsix/alpine-java java -8
+FROM anapsix/alpine-java
 VOLUME /tmp
 ADD SeguridadGeneralRest-0.0.1-SNAPSHOT.jar app.jar
 RUN bash -c 'touch /app.jar'
