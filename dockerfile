@@ -21,4 +21,4 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 # docker run -e"SPRING_PROFILES_ACTIVE=local" [IMAGE_ID]
 
 #RUN PROFILES pasando como variables los puertos a exponer
-# docker run -e"SPRING_PROFILES_ACTIVE=local" [IMAGE_ID]-d -p 9000:8071 
+# docker run -e"SPRING_PROFILES_ACTIVE=local" [IMAGE_ID]-d -p 8071:8071 

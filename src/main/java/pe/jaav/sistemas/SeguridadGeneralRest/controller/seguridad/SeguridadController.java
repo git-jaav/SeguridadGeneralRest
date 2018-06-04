@@ -19,6 +19,7 @@ import pe.jaav.sistemas.SeguridadGeneralRest.model.SysUsuarioJson;
 import pe.jaav.sistemas.SeguridadGeneralRest.utiles.JsonViewAssembler;
 import pe.jaav.sistemas.SeguridadGeneralRest.utiles.JsonViewCustom;
 import pe.jaav.sistemas.general.service.UsuarioService;
+import pe.jaav.sistemas.general.service.utiles.Log;
 import pe.jaav.sistemas.seguridadgeneral.model.domain.SysUsuario;
 
 
@@ -48,8 +49,7 @@ public class SeguridadController {
 	    @RequestMapping(value = "/users/", method = RequestMethod.GET)	   
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)	    
 	    public ResponseEntity<List<SysUsuarioJson>> listAllUsers() {
-	        List<SysUsuario> users = userService.listar(new SysUsuario(),false);	        	        	       	        
-	        
+	        List<SysUsuario> users = userService.listar(new SysUsuario(),false);	        	        	       	        	        
 	        if(users.isEmpty()){
 	            return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.NO_CONTENT);	            
 	        }else{
@@ -68,11 +68,9 @@ public class SeguridadController {
 	     */
 	    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
-	    public ResponseEntity<SysUsuarioJson> getUser(@PathVariable("id") Integer id) {
-	        System.out.println("Fetching User with id " + id);
+	    public ResponseEntity<SysUsuarioJson> getUser(@PathVariable("id") Integer id) {	        
 	        SysUsuario user = userService.obtenerPorID(id);
-	        if (user == null) {
-	            System.out.println("User with id " + id + " not found");
+	        if (user == null) {	            
 	            return new ResponseEntity<SysUsuarioJson>(HttpStatus.NOT_FOUND);
 	        }else{	        	
 	        	return new ResponseEntity<SysUsuarioJson>(jsonAssemb.getJsonObject(user), HttpStatus.OK);	
@@ -122,15 +120,20 @@ public class SeguridadController {
 	    @RequestMapping(value = "/users/", method = RequestMethod.POST)    		
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
 	    public ResponseEntity<List<SysUsuarioJson>> listUsers(@RequestBody SysUsuarioJson usuario, UriComponentsBuilder ucBuilder) {
-	        //System.out.println("Fetching User with id " + usuario);
-	    	List<SysUsuario> users = userService.listar(jsonAssembInverso.getJsonObject(usuario),false);	        	        	       	        	        
-	        if(users.isEmpty()){
-	            return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.NO_CONTENT);	            
-	        }else{
-		        List<SysUsuarioJson> usersJson = jsonAssemb.getJsonListDozer(users);		    
-		        
-		        return new ResponseEntity<List<SysUsuarioJson>>(usersJson, HttpStatus.OK);	        	
-	        }
+	         try{	 	 	        	 
+	 	    	List<SysUsuario> users = userService.listar(jsonAssembInverso.getJsonObject(usuario),false);	        	        	       	        	        
+		        if(users.isEmpty()){
+		            return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.NO_CONTENT);	            
+		        }else{
+			        List<SysUsuarioJson> usersJson = jsonAssemb.getJsonListDozer(users);		    
+			        
+			        return new ResponseEntity<List<SysUsuarioJson>>(usersJson, HttpStatus.OK);	        	
+		        }
+		     }catch(Exception e){
+		        e.printStackTrace();
+		        Log.error(e, "listUsers");
+		        return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.EXPECTATION_FAILED);
+		     }	        
 	        	     
 	    }
 	    
@@ -142,23 +145,25 @@ public class SeguridadController {
 	    @RequestMapping(value = "/users/pag/", method = RequestMethod.POST)    		
 	    @JsonViewCustom(JsonViewInterfaces.ViewGeneral.class)
 	    public ResponseEntity<List<SysUsuarioJson>> listUsersPaginado(@RequestBody SysUsuarioJson usuario, UriComponentsBuilder ucBuilder) {
-	        //System.out.println("Fetching User with id " + usuario);
-	    	List<SysUsuario> users = userService.listar(jsonAssembInverso.getJsonObject(usuario),true);	        	        	       	        	        
-	        if(users.isEmpty()){
-	            return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.NO_CONTENT);	            
-	        }else{
-	        	//Set valor de la cuenta para la paginacion...
-	        	int cuenta = userService.contarListado(usuario);
-	        	users.stream().forEach(u -> {u.setContadorTotal(cuenta);});	        	
-//	        	for(SysUsuario user : users){
-//	        		user.setContadorTotal(cuenta);	
-//	        	}
-	        	        		        	
-		        List<SysUsuarioJson> usersJson = jsonAssemb.getJsonListDozer(users);		    
-		        
-		        return new ResponseEntity<List<SysUsuarioJson>>(usersJson, HttpStatus.OK);	        	
-	        }
-	        	     
+	        try{
+		    	SysUsuario filtro = jsonAssembInverso.getJsonObject(usuario);
+		    	List<SysUsuario> users = userService.listar(filtro,true);	        	        	       	        	        
+		        if(users.isEmpty()){
+		            return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.NO_CONTENT);	            
+		        }else{
+		        	//Set valor de la cuenta para la paginacion...
+		        	int cuenta = userService.contarListado(filtro);	        	
+		        	for(SysUsuario user : users){
+		        		user.setContadorTotal(cuenta);	
+		        	}	        	        		        
+			        List<SysUsuarioJson> usersJson = jsonAssemb.getJsonListDozer(users);		    			        
+			        return new ResponseEntity<List<SysUsuarioJson>>(usersJson, HttpStatus.OK);	        	
+		        }	
+	        }catch(Exception e){
+	        	e.printStackTrace();
+	        	Log.error(e, "listUsersPaginado");
+	        	return new ResponseEntity<List<SysUsuarioJson>>(HttpStatus.EXPECTATION_FAILED);
+	        }	        	    
 	    }
 	    	     
 	    
@@ -177,6 +182,8 @@ public class SeguridadController {
 	        	 }	
 			     return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.CREATED);
 		     }catch(Exception e){
+		        e.printStackTrace();
+		        Log.error(e, "guardar");
 		        return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		     }		         	         
 	    }
@@ -195,7 +202,7 @@ public class SeguridadController {
 	        	 SysUsuario userUpdate =  userService.obtenerPorID(user.getUsuaId());
 	        	 if(userUpdate!=null){
 	        		 //Actualizar Objeto obtenido con los valores del Objeto parametro recibido...
-	        		 userUpdate = jsonAssembInverso.getJsonObjectDestino(jsonAssemb.getJsonObject(user), userUpdate);	        		
+	        		 userUpdate = jsonAssembInverso.getJsonObjectDestino(user, userUpdate);	        		
 	        		 result =  userService.actualizar(userUpdate,
 	        				 userService.detectarCambioClaveUsuario(userUpdate.getUsuaId(), userUpdate.getUsuaClave()));
 	        		 		        	 
@@ -209,6 +216,8 @@ public class SeguridadController {
 	        		 return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 	        	 }			     
 		     }catch(Exception e){
+			    e.printStackTrace();
+			    Log.error(e, "actualizar");		    	 
 		        return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		     }		         	         
 	    }
@@ -236,7 +245,8 @@ public class SeguridadController {
 	        		 return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 	        	 }			     
 		     }catch(Exception e){
-		    	 //return new ResponseEntity<SysUsuarioJson>(HttpStatus.NO_CONTENT);
+		    	e.printStackTrace();
+				Log.error(e, "eliminar");
 		        return new ResponseEntity<SysUsuarioJson>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		     }		         	         
 	    }	 	  		 

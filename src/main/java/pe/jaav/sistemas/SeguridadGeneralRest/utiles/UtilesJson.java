@@ -3,7 +3,7 @@ package pe.jaav.sistemas.SeguridadGeneralRest.utiles;
 import java.lang.reflect.Field;
 
 public class UtilesJson {
-
+	
 	/**Construye dinamicamente un nuevo objetode Una clase determinada a partir del objeto Original*/
     public static Object getNuevoObjetoGenerico(Object objetoOrigen, Class<?> claseNuevoObjeto){
 		try{			

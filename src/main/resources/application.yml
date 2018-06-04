@@ -11,9 +11,29 @@ spring:
     
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.1.41:3306/pyme_erp_seguridad
+    url: jdbc:mysql://192.168.1.41:3306/seguridadgeneral
     username: root
-    password: 1234
+    password: 1234   
+ #Tunear parametros para reconección y tiempo fuera de conexión
+    testOnBorrow: true
+    #removeAbandonedTimeout: 1800
+    #removeAbandoned: true    
+    validation-query: SELECT 1 
+    logAbandoned: true
+    minEvictableIdleTimeMillis: 60000    
+    maxWait: 60000
+    maxIdle: 1
+    minIdle: 0
+    maxActive: 50
+    initialSize: 1
+    test-on-connect: true
+        
+#    tomcat:
+#      test-on-borrow: true
+#      test-while-idle: true
+#      time-between-eviction-runs-millis: 360000
+#      validation-query: SELECT 1 
+#      test-on-connect: true
 
   jpa:    
     properties:
@@ -25,7 +45,7 @@ spring:
         #dialect: org.hibernate.dialect.MySQL5InnoDBDialect 
         show_sql: true
         format_sql: true          
-        packagesToScan: pe.jaav.sistemas.seguridadgeneral.model
+        packagesToScan: pe.jaav.sistemas.seguridadgeneral.model        
      
 ###Relacionado al despliegue         
 ---
