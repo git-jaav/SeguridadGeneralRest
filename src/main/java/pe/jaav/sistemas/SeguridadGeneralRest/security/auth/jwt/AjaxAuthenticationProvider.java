@@ -11,14 +11,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import pe.jaav.common.util.UtilesCommons;
 import pe.jaav.sistemas.SeguridadGeneralRest.security.UserContext;
 import pe.jaav.sistemas.SeguridadGeneralRest.security.config.JwtSettings;
 import pe.jaav.sistemas.SeguridadGeneralRest.utiles.UtilesRest;
+import pe.jaav.sistemas.general.service.SysRolService;
 import pe.jaav.sistemas.general.service.UsuarioService;
+import pe.jaav.sistemas.seguridadgeneral.model.domain.SysRol;
 import pe.jaav.sistemas.seguridadgeneral.model.domain.SysUsuario;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -33,7 +37,10 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 	
 	 @Autowired
 	 UsuarioService userService;
-    
+		
+	 @Autowired
+	 SysRolService sysRolService;
+	 
     @Autowired
     public AjaxAuthenticationProvider(JwtSettings jwtSettings) {
         this.jwtSettings = jwtSettings;
@@ -60,14 +67,20 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
         SysUsuario user = userService.obtenerLogin(username,password);    
         if(user!=null){
         	/**Obtener SEGURIDAD ...PERFILES; PERMISOS...etc*/
-            //String code = (String) authentication.getDetails();                   
-            //Cliente userCliente = clienteService.obtenerPorID(code);
-            List<GrantedAuthority> authorities  = new  ArrayList<>();
-            authorities.add( new SimpleGrantedAuthority("ADMIN"));
-            authorities.add( new SimpleGrantedAuthority("USUARIO"));
+        	List<SysRol> listaRoles =   sysRolService.listarSysRolUsuarioAsigandos(user.getUsuaId());
+        	List<GrantedAuthority> authorities  = new  ArrayList<>();
+        	if(UtilesCommons.noEsVacio(listaRoles)){
+        		authorities = listaRoles.stream()
+        		.map(f -> new SimpleGrantedAuthority(f.getRolCodigo()))
+        		.collect(Collectors.toList());
+        	}
+//        	else{
+//        		/**Agregar default*/
+//        		authorities.add( new SimpleGrantedAuthority("USUARIO"));	
+//        	}                                   
                     
-            UserContext userContext = UserContext.create(user.getUsuaUsuario(), authorities);
-            return new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());        	
+            UserContext userContext = UserContext.create(user.getUsuaUsuario(), authorities);            
+            return new UsernamePasswordAuthenticationToken(user, userContext, userContext.getAuthorities());        	
         }else{
         	throw new AuthenticationServiceException(UtilesRest.getMSJProperty("SCURITY.AUTH_ERROR"));
         }

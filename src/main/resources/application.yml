@@ -19,7 +19,8 @@ spring:
     #removeAbandonedTimeout: 1800
     #removeAbandoned: true    
     validation-query: SELECT 1 
-    logAbandoned: true
+    logAbandoned: true    
+    validation-query-timeout: 30000 
     minEvictableIdleTimeMillis: 60000    
     maxWait: 60000
     maxIdle: 1
