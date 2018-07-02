@@ -13,14 +13,18 @@ import org.springframework.util.Assert;
 
 import pe.jaav.common.util.UtilesCommons;
 import pe.jaav.sistemas.SeguridadGeneralRest.security.UserContext;
+import pe.jaav.sistemas.SeguridadGeneralRest.security.auth.TokenAuthenticationService;
 import pe.jaav.sistemas.SeguridadGeneralRest.security.config.JwtSettings;
 import pe.jaav.sistemas.SeguridadGeneralRest.utiles.UtilesRest;
 import pe.jaav.sistemas.general.service.SysRolService;
+import pe.jaav.sistemas.general.service.SysSesionService;
 import pe.jaav.sistemas.general.service.UsuarioService;
 import pe.jaav.sistemas.seguridadgeneral.model.domain.SysRol;
+import pe.jaav.sistemas.seguridadgeneral.model.domain.SysSesion;
 import pe.jaav.sistemas.seguridadgeneral.model.domain.SysUsuario;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +44,10 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 		
 	 @Autowired
 	 SysRolService sysRolService;
-	 
+
+    @Autowired
+    SysSesionService sysSesionService;
+
     @Autowired
     public AjaxAuthenticationProvider(JwtSettings jwtSettings) {
         this.jwtSettings = jwtSettings;
@@ -64,8 +71,17 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         /**Validar*/
-        SysUsuario user = userService.obtenerLogin(username,password);    
+        SysUsuario user = userService.obtenerLogin(username,password);
+
         if(user!=null){
+            /**Generar TOKEN*/
+            Date fechaExpiracionToken = TokenAuthenticationService.generarExpiracionJwtToken();
+            user.setTokenSecurity(
+                    TokenAuthenticationService.generarJwtToken(user, fechaExpiracionToken));
+
+            /**Sesion*/
+            generarSesionUsuario(user,fechaExpiracionToken);
+
         	/**Obtener SEGURIDAD ...PERFILES; PERMISOS...etc*/
         	List<SysRol> listaRoles =   sysRolService.listarSysRolUsuarioAsigandos(user.getUsuaId());
         	List<GrantedAuthority> authorities  = new  ArrayList<>();
@@ -90,5 +106,19 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
     @Override
     public boolean supports(Class<?> authentication) {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
+    }
+
+    /**
+     * Generar y guardar la SESION actual
+     * */
+    public SysSesion generarSesionUsuario(SysUsuario user, Date fechaExpiracionToken){
+        SysSesion sesion = new SysSesion();
+        sesion.setFkUsuaId(user.getUsuaId());
+        sesion.setSesiHoraInicio(new Date());
+        sesion.setSesiHoraFinal(fechaExpiracionToken);
+        sesion.setSesiEstado(UtilesCommons.ACTIVO_db);
+        sesion.setSesiToken(user.getTokenSecurity());
+        sysSesionService.guardar(sesion);
+        return sesion;
     }
 }

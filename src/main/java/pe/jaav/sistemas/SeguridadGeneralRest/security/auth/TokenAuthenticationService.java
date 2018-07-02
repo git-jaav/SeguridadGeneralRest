@@ -31,27 +31,25 @@ public class TokenAuthenticationService {
   /** Agregar al Autenticacion generada (El response HTTP) con el nombre de usuario y
    * la data para el Body
  * @param res
- * @param username
- * @param objData
+ * @param objPrincipal
+ * @param objCredential
  */
 public static void addAuthentication(HttpServletResponse res, Object objPrincipal,Object objCredential) {	 
 	try{
 		if(objPrincipal!=null){
-			String userName = null;
-			String userCode = null;
-			Integer useId = null;
+			//String userName = null;
+			//String userCode = null;
+			//Integer useId = null;
+			String JWT = null;
 			if(objPrincipal instanceof SysUsuario){				
-				userName = ((SysUsuario)objPrincipal).getUsuaNombre();  
-				userCode = ((SysUsuario)objPrincipal).getUsuaUsuario();
-				useId = ((SysUsuario)objPrincipal).getUsuaId();
+				//userName = ((SysUsuario)objPrincipal).getUsuaNombre();
+				//userCode = ((SysUsuario)objPrincipal).getUsuaUsuario();
+				//useId = ((SysUsuario)objPrincipal).getUsuaId();
+				JWT = ((SysUsuario)objPrincipal).getTokenSecurity();
 			}
-			
-		    String JWT = Jwts.builder()
-		            .setSubject(userName+"-"+userCode)		            
-		            .setId(""+useId)
-		            .setExpiration(new Date(System.currentTimeMillis() + WebSecurityConfig.JWT_EXPIRATIONTIME))        
-		            .signWith(SignatureAlgorithm.HS512, WebSecurityConfig.JWT_SECRET)
-		            .compact();
+
+			//lo generamos antes
+			//generarJwtToken();
 		        
 	    	//HEADER
 	        res.addHeader(WebSecurityConfig.JWT_TOKEN_HEADER_PARAM, WebSecurityConfig.JWT_TOKEN_PREFIX + " " + JWT);	
@@ -91,4 +89,24 @@ public static Authentication getAuthentication(HttpServletRequest request) {
     }
     return null;
   }
+
+  	/**
+	 * Generar Token JWT
+	 * */
+	public static String generarJwtToken(SysUsuario usurioSescion, Date fechaExpiracion){
+		String JWT = Jwts.builder()
+				.setSubject(usurioSescion.getUsuaNombre()+"-"+usurioSescion.getUsuaUsuario())
+				.setId(""+usurioSescion.getUsuaId())
+				.setExpiration(fechaExpiracion)
+				.signWith(SignatureAlgorithm.HS512, WebSecurityConfig.JWT_SECRET)
+				.compact();
+		return JWT;
+	}
+
+	/**
+	 * Generar Token JWT
+	 * */
+	public static Date generarExpiracionJwtToken(){
+		return new Date(System.currentTimeMillis() + WebSecurityConfig.JWT_EXPIRATIONTIME);
+	}
 }
