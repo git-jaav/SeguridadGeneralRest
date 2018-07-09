@@ -1,10 +1,15 @@
 #Esta configuración puede estar controlada por CONFIG SERVER
 
+#######################################################
+###  CONFIG GENERAL
+#######################################################
+
 ###Relacionado a Spring - Hibernate
 
 spring:  
   profiles:
-     active: dev
+     #active: dev
+     active: dev-ab
      
   aop:
     proxy-target-class: false
@@ -47,20 +52,52 @@ spring:
         show_sql: true
         format_sql: true          
         packagesToScan: pe.jaav.sistemas.seguridadgeneral.model        
-     
-###Relacionado al despliegue         
+
+#######################################################
+###  CONFIG DE PROFILES
+#######################################################
+
+#######################################################
+####PROFILE DEV CON ADMIN BOOT
 ---
 spring:
-  profiles: dev
+  profiles: dev-ab
+  boot:
+    admin:
+      url: http://localhost:1001
+      username: admin
+      password: 51573m45
+server:
+  port: ${vcap.application.port:7071}
+
+####PROFILE DEV GENERAL ADMIN BOOT
+---
+spring:
+  profiles: dev, dev-ab
   application:
     name: seguridadDev
     
 server:
   port: ${vcap.application.port:7071}
-    
+
+
+#######################################################
+####PROFILE LOCAL CON ADMIN BOOT
 ---
 spring:
-  profiles: local
+  profiles: local-ab
+  boot:
+    admin:
+      url: http://localhost:1001
+      username: admin
+      password: 51573m45
+server:
+  port: ${vcap.application.port:8071}
+---
+#######################################################
+####PROFILE LOCAL SIN ADMIN BOOT
+spring:
+  profiles: local, local-ab
   application:
     name: seguridadLocal    
            
