@@ -8,8 +8,8 @@
 
 spring:  
   profiles:
-     #active: dev
-     active: dev-ab
+     active: dev
+     #active: dev-ab
      
   aop:
     proxy-target-class: false
@@ -80,7 +80,32 @@ spring:
 server:
   port: ${vcap.application.port:7071}
 
+eureka:
+  client:
+      enabled: false
+      
+####PROFILE DEV CON DISCOVERY SERVER
+---
+spring:
+  profiles: dev-disc
+  application:
+    name: seguridadDev
+    
+server:
+  port: ${vcap.application.port:7071}          
 
+eureka:
+  client:
+      enabled: true
+      register-with-eureka: true  
+      serviceUrl:
+        defaultZone:  http://192.168.1.115:8002/eureka/  
+        #defaultZone:  http://192.168.1.115:8002/
+  instance:
+    #instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}
+    
+          
 #######################################################
 ####PROFILE LOCAL CON ADMIN BOOT
 ---
@@ -103,17 +128,10 @@ spring:
            
 server:
   port: ${vcap.application.port:8071}
-            
-#eureka:
 
-#  client:  
-#      serviceUrl:
-#        defaultZone:  http://localhost:8002/eureka/  
-#  instance:
-#    instanceId: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
-#          
-
-
+eureka:
+  client:
+      enabled: false
 ###RUN PROFILES
 #java -jar -Dspring.profiles.active=local SeguridadGeneralRest-0.0.1-SNAPSHOT.jar
 #java -jar -Dspring.profiles.active=dev SeguridadGeneralRest-0.0.1-SNAPSHOT.jar
