@@ -1,0 +1,31 @@
+################################################
+#DOCKER COMPOSE: Para proyecto Boot - Estrucutura Basica#
+
+version: '3'
+services:
+  seguridad-dev:
+    build:
+      context: ./
+      dockerfile: dockerfile
+    image: seguridad-api:dockerfile
+#PORTS CONFIG 
+#    ports:
+#      - 7071
+    ports:
+      - "7071"
+      - "7071:7071/tcp"
+      - "127.0.0.1:8071:7071"      
+#    expose:
+#      - 7071
+    network_mode: bridge
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+#    networks:
+#      red01:
+#        ipv4_address: 192.168.2.2
+#networks:
+#  red01:
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 192.168.2.4/16
