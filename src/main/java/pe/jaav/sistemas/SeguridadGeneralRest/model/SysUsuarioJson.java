@@ -32,6 +32,10 @@ public  class SysUsuarioJson extends EntidadJson<SysUsuarioJson> {
 	private String usuaFlagExpirar;
 	private Date usuaFechaExpiracion;
 	private String usuaFlagIneditable;
+	
+	private String tokenSecurity;
+	
+	
 	public Integer getUsuaId() {
 		return usuaId;
 	}
@@ -97,6 +101,12 @@ public  class SysUsuarioJson extends EntidadJson<SysUsuarioJson> {
 	}
 	public void setUsuaFlagIneditable(String usuaFlagIneditable) {
 		this.usuaFlagIneditable = usuaFlagIneditable;
+	}
+	public String getTokenSecurity() {
+		return tokenSecurity;
+	}
+	public void setTokenSecurity(String tokenSecurity) {
+		this.tokenSecurity = tokenSecurity;
 	}
 
 	

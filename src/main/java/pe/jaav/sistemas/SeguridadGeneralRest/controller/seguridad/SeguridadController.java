@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,13 +29,14 @@ import pe.jaav.sistemas.seguridadgeneral.model.domain.SysUsuario;
  * Rest Controller con CRUD y listados básicos ... basados en una entidad: SysUsuario
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/api/seguridad")
 public class SeguridadController {
 
 	 @Autowired
-	 UsuarioService userService;
+	 UsuarioService userService;	 	         
 	 
-	     
+	 
 	 private JsonViewAssembler<SysUsuario, SysUsuarioJson> jsonAssemb = 
 			 new JsonViewAssembler<SysUsuario, SysUsuarioJson>(SysUsuarioJson.class);
 
@@ -42,6 +44,8 @@ public class SeguridadController {
 			 new JsonViewAssembler<SysUsuarioJson, SysUsuario>(SysUsuario.class);
 
 
+
+	    
 	     
 	    /** listar todos los elementos ...
 	     * @return

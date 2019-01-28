@@ -78,7 +78,7 @@ spring:
     name: seguridadDev
     
 server:
-  port: ${vcap.application.port:7071}
+  port: ${vcap.application.port:7072}
 
 eureka:
   client:

@@ -74,6 +74,8 @@ public static void addAuthentication(HttpServletResponse res, Object objPrincipa
  * @return
  */
 public static Authentication getAuthentication(HttpServletRequest request) {
+	
+	String uri = request.getRequestURI();
     String token = request.getHeader(WebSecurityConfig.JWT_TOKEN_HEADER_PARAM);
     if (token != null) {
       // parse the token.

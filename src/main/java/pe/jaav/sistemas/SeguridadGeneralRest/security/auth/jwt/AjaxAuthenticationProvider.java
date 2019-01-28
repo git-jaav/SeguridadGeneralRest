@@ -65,7 +65,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Assert.notNull(authentication, UtilesRest.getMSJProperty("SCURITY.AUTH__DATOS_NOPROVEIDOS"));
+        Assert.notNull(authentication, UtilesRest.getMSJProperty("SCURITY.AUTH_DATOS_NOPROVEIDOS"));
 
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
@@ -90,10 +90,10 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
         		.map(f -> new SimpleGrantedAuthority(f.getRolCodigo()))
         		.collect(Collectors.toList());
         	}
-//        	else{
-//        		/**Agregar default*/
-//        		authorities.add( new SimpleGrantedAuthority("USUARIO"));	
-//        	}                                   
+        	else{
+        		/**Agregar default*/
+        		authorities.add( new SimpleGrantedAuthority("USUARIO"));	
+        	}                                   
                     
             UserContext userContext = UserContext.create(user.getUsuaUsuario(), authorities);            
             return new UsernamePasswordAuthenticationToken(user, userContext, userContext.getAuthorities());        	

@@ -19,6 +19,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
@@ -39,15 +41,15 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
       throws AuthenticationException, IOException, ServletException {
 	  
 	  /**Autenticar respuesta*/
-      //if (!HttpMethod.POST.name().equals(request.getMethod()) || !WebUtil.isAjax(request)) {
+      //if (!HttpMethod.POST.name().equals(request.getMethod()) || !WebUtil.isAjax(request)) {	 
       if (!HttpMethod.POST.name().equals(request.getMethod())) {
           if(logger.isDebugEnabled()) {
               logger.debug("Metodo de Autenticacion no soportado. Request method: " + request.getMethod());
           }
           throw new AuthenticationServiceException("Metodo de Autenticacion no soportado");
       }
-
-      UserCredentials userLoginRequest = new ObjectMapper().readValue(request.getReader(), UserCredentials.class);
+      BufferedReader reader = request.getReader();
+      UserCredentials userLoginRequest = new ObjectMapper().readValue(reader, UserCredentials.class);
       //UserCredentials userLoginRequest = new ObjectMapper().readValue(request.getInputStream(), AccountCredentials.class);
       
       if (StringUtils.isBlank(userLoginRequest.getUsername()) || StringUtils.isBlank(userLoginRequest.getPassword())) {
